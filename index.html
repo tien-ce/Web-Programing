@@ -3,45 +3,9 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
+    <link rel="shortcut icon" href="img/farm_smart.jpg" type="image/x-icon" />
     <title>Hệ Thống Tưới Tiêu Thông Minh</title>
-    <style>
-      body {
-        font-family: Arial, sans-serif;
-        text-align: center;
-        background-color: #f4f4f4;
-      }
-      .container {
-        max-width: 600px;
-        margin: 20px auto;
-        padding: 20px;
-        background: white;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        border-radius: 8px;
-      }
-      h1 {
-        color: #27ae60;
-      }
-      .sensor-data {
-        font-size: 20px;
-        margin: 10px 0;
-      }
-      .pump-control button {
-        font-size: 18px;
-        padding: 10px 20px;
-        margin: 10px;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-      }
-      .on {
-        background-color: #2ecc71;
-        color: white;
-      }
-      .off {
-        background-color: #e74c3c;
-        color: white;
-      }
-    </style>
     <script>
       function togglePump(state) {
         alert(state ? "Bơm nước đã bật!" : "Bơm nước đã tắt!");
@@ -52,8 +16,8 @@
     <a href="/">Home</a>
     <a href="more_info/my_skill.html"> My skill </a>
     <a href="more_info/contact.html">Contact</a>
+    <h1>Hệ Thống Tưới Tiêu Thông Minh</h1>
     <div class="container">
-      <h1>Hệ Thống Tưới Tiêu Thông Minh</h1>
       <div class="sensor-data">
         <p>Độ ẩm đất: <span id="moisture">40%</span></p>
         <p>Nhiệt độ: <span id="temperature">28°C</span></p>
@@ -64,8 +28,5 @@
         <button class="off" onclick="togglePump(false)">Tắt Bơm</button>
       </div>
     </div>
-    <a href="more_info/contact.html"
-      ><img src="img/smart-factory.jpg" alt="Smart factory"
-    /></a>
   </body>
 </html>
