@@ -5,11 +5,11 @@ body {
 }
 .container {
   max-width: 600px;
-  margin: 20px auto;
+  margin: 2% auto;
   padding: 20px;
-  background: white;
+  background: rgb(80, 105, 80);
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  border-radius: 8px;
+  border-radius: 20px;
 }
 h1 {
   color: blue;
