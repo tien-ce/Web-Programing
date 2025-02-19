@@ -2,64 +2,37 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ThingsBoard Attribute Control</title>
+    <title>MQTT ThingsBoard Control</title>
     <style>
       body {
         font-family: Arial, sans-serif;
         text-align: center;
         padding: 50px;
       }
-      button {
-        font-size: 18px;
-        padding: 10px 20px;
-        margin: 10px;
-        cursor: pointer;
-      }
+      button,
       input {
         font-size: 16px;
-        padding: 5px;
-        margin: 10px;
-        width: 100px;
+        padding: 10px;
+        margin: 5px;
       }
     </style>
   </head>
   <body>
-    <h2>Thay đổi thuộc tính trên ThingsBoard</h2>
+    <h2>Điều khiển thiết bị trên ThingsBoard bằng MQTT</h2>
 
-    <label for="ledState">LED State:</label>
-    <button onclick="updateAttribute('ledState', true)">BẬT</button>
-    <button onclick="updateAttribute('ledState', false)">TẮT</button>
+    <p>
+      <label>LED State:</label>
+      <button onclick="sendMQTT('ledState', true)">BẬT</button>
+      <button onclick="sendMQTT('ledState', false)">TẮT</button>
+    </p>
 
-    <br /><br />
+    <p>
+      <label>Blink Interval (ms):</label>
+      <input type="number" id="blinkingInterval" placeholder="1000" />
+      <button onclick="updateBlinkInterval()">Cập nhật</button>
+    </p>
 
-    <label for="blinkingInterval">Blink Interval (ms):</label>
-    <input type="number" id="blinkingInterval" placeholder="1000" />
-    <button
-      onclick="updateAttribute('blinkingInterval', document.getElementById('blinkingInterval').value)"
-    >
-      Cập nhật
-    </button>
-
-    <script>
-      const TOKEN = "ejmauiuy3cri6rbn4kxm"; // Access Token của SensorT1
-      const SERVER = "http://app.coreiot.io"; // Địa chỉ ThingsBoard Server
-      const API_URL = `${SERVER}/api/v1/${TOKEN}/attributes`;
-
-      async function updateAttribute(attribute, value) {
-        try {
-          const response = await fetch(API_URL, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ [attribute]: value }),
-          });
-
-          if (!response.ok) throw new Error(`Lỗi HTTP: ${response.status}`);
-          alert(`Cập nhật ${attribute} thành công!`);
-        } catch (error) {
-          alert(`Lỗi cập nhật: ${error}`);
-        }
-      }
-    </script>
+    <!-- Link tới file main.js -->
+    <script src="main.js"></script>
   </body>
 </html>
