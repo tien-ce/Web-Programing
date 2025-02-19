@@ -1,28 +1,65 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="style.css" />
-    <link rel="shortcut icon" href="" type="image/x-icon" />
-    <title>Hệ Thống Tưới Tiêu Thông Minh</title>
-    <script src="main.js"></script>
+    <title>ThingsBoard Attribute Control</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        text-align: center;
+        padding: 50px;
+      }
+      button {
+        font-size: 18px;
+        padding: 10px 20px;
+        margin: 10px;
+        cursor: pointer;
+      }
+      input {
+        font-size: 16px;
+        padding: 5px;
+        margin: 10px;
+        width: 100px;
+      }
+    </style>
   </head>
   <body>
-    <a href="/">Home</a>
-    <a href="more_info/my_skill.html"> My skill </a>
-    <a href="more_info/contact.html">Contact</a>
-    <h1>Hệ Thống Tưới Tiêu Thông Minh</h1>
-    <div class="container">
-      <div class="sensor-data">
-        <p>Độ ẩm đất: <span id="moisture">40%</span></p>
-        <p>Nhiệt độ: <span id="temperature">28°C</span></p>
-        <p>Trạng thái bơm: <span id="pumpStatus">Tắt</span></p>
-      </div>
-      <div class="pump-control">
-        <button class="on" onclick="togglePump(true)">Bật Bơm</button>
-        <button class="off" onclick="togglePump(false)">Tắt Bơm</button>
-      </div>
-    </div>
+    <h2>Thay đổi thuộc tính trên ThingsBoard</h2>
+
+    <label for="ledState">LED State:</label>
+    <button onclick="updateAttribute('ledState', true)">BẬT</button>
+    <button onclick="updateAttribute('ledState', false)">TẮT</button>
+
+    <br /><br />
+
+    <label for="blinkingInterval">Blink Interval (ms):</label>
+    <input type="number" id="blinkingInterval" placeholder="1000" />
+    <button
+      onclick="updateAttribute('blinkingInterval', document.getElementById('blinkingInterval').value)"
+    >
+      Cập nhật
+    </button>
+
+    <script>
+      const TOKEN = "ejmauiuy3cri6rbn4kxm"; // Access Token của SensorT1
+      const SERVER = "http://app.coreiot.io"; // Địa chỉ ThingsBoard Server
+      const API_URL = `${SERVER}/api/v1/${TOKEN}/attributes`;
+
+      async function updateAttribute(attribute, value) {
+        try {
+          const response = await fetch(API_URL, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ [attribute]: value }),
+          });
+
+          if (!response.ok) throw new Error(`Lỗi HTTP: ${response.status}`);
+          alert(`Cập nhật ${attribute} thành công!`);
+        } catch (error) {
+          alert(`Lỗi cập nhật: ${error}`);
+        }
+      }
+    </script>
   </body>
 </html>
