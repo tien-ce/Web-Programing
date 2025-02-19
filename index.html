@@ -2,110 +2,47 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>MQTT WebSocket Example</title>
+    <title>Update Attributes via REST</title>
   </head>
   <body>
-    <h2>Điều khiển LED qua MQTT WebSocket (ThingsBoard)</h2>
-    <button onclick="toggleLED(true)">BẬT</button>
-    <button onclick="toggleLED(false)">TẮT</button>
+    <h2>Điều khiển LED qua ThingsBoard (Không dùng thư viện)</h2>
 
-    <!-- Thông báo trạng thái kết nối -->
-    <p id="status" style="color: red">Chưa kết nối!</p>
+    <button onclick="toggleLED(true)">BẬT LED</button>
+    <button onclick="toggleLED(false)">TẮT LED</button>
 
-    <!-- 1) Nạp thư viện Paho MQTT từ CDN -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.1.0/paho-mqtt.min.js"></script>
-
-    <!-- 2) Code JS của bạn -->
     <script>
-      // ==============================
-      // CẤU HÌNH
-      // ==============================
-      // Access Token của thiết bị ThingsBoard (SensorT1)
-      const TOKEN = "ejmauiuy3cri6rbn4kxm";
+      // Device Access Token của thiết bị trên ThingsBoard (VD: "ejmauiuy3cri6rbn4kxm")
+      const DEVICE_TOKEN = "ejmauiuy3cri6rbn4kxm";
+      // URL server (VD: "http://app.coreiot.io" hoặc "http://demo.thingsboard.io")
+      const SERVER_URL = "http://app.coreiot.io";
 
-      // Địa chỉ máy chủ, cổng và path dành cho MQTT WebSocket
-      // Nếu server hỗ trợ WebSocket trên cổng 8080 (không SSL), dùng ws://
-      // Nếu server HTTPS + WSS, bạn phải dùng wss:// cổng 443 (tuỳ cấu hình)
-      const HOST = "app.coreiot.io";
-      const PORT = 8080;
-      const PATH = "/mqtt";
-
-      // Tạo clientId ngẫu nhiên (phòng trường hợp mở nhiều tab)
-      const clientId = "web_" + Math.floor(Math.random() * 1000);
-
-      // Khai báo một biến client toàn cục
-      let client = null;
-
-      // Khi trang tải xong, khởi tạo kết nối MQTT
-      window.onload = () => {
-        initMQTT();
-      };
-
-      // ==============================
-      // HÀM KHỞI TẠO MQTT
-      // ==============================
-      function initMQTT() {
-        // Tạo client Paho MQTT
-        client = new Paho.MQTT.Client(HOST, PORT, PATH, clientId);
-
-        // Tuỳ chọn kết nối: userName = Access Token
-        const options = {
-          userName: TOKEN,
-          password: "", // Để trống
-          // useSSL: true,  // Nếu dùng wss (HTTPS), bỏ comment dòng này
-          onSuccess: onConnect,
-          onFailure: onFail,
-        };
-
-        // Kết nối tới MQTT Broker (ThingsBoard)
-        client.connect(options);
-
-        // Callback khi mất kết nối
-        client.onConnectionLost = (resp) => {
-          console.error("Mất kết nối:", resp.errorMessage);
-          document.getElementById("status").textContent = "Mất kết nối!";
-        };
-
-        // Callback khi nhận message (nếu bạn subscribe)
-        client.onMessageArrived = (msg) => {
-          console.log("Nhận message:", msg.payloadString);
-        };
-      }
-
-      // ==============================
-      // CALLBACKS KẾT NỐI
-      // ==============================
-      function onConnect() {
-        console.log("✅ Đã kết nối MQTT WebSocket!");
-        document.getElementById("status").style.color = "green";
-        document.getElementById("status").textContent =
-          "Đã kết nối MQTT WebSocket!";
-        // Nếu muốn subscribe topic gì đó, bạn làm ở đây:
-        // client.subscribe("v1/devices/me/attributes");
-      }
-
-      function onFail(err) {
-        console.error("❌ Kết nối MQTT WebSocket thất bại:", err);
-        document.getElementById("status").textContent = "Kết nối thất bại!";
-      }
-
-      // ==============================
-      // GỬI THUỘC TÍNH (SHARED ATTRIBUTES)
-      // ==============================
+      // Hàm gửi lệnh bật/tắt LED bằng Shared Attributes
       function toggleLED(state) {
-        if (!client || !client.isConnected()) {
-          alert("Chưa kết nối! Vui lòng chờ kết nối MQTT trước.");
-          return;
-        }
-        // Gửi JSON lên topic attributes
-        const payload = JSON.stringify({ ledState: state });
-        const topic = "v1/devices/me/attributes";
+        // Đường dẫn REST:  /api/v1/DEVICE_TOKEN/attributes
+        const apiEndpoint = `${SERVER_URL}/api/v1/${DEVICE_TOKEN}/attributes`;
 
-        const message = new Paho.MQTT.Message(payload);
-        message.destinationName = topic;
+        // Payload là 1 JSON object, key "ledState" (hay tên gì bạn muốn)
+        const payload = { ledState: state };
 
-        client.send(message);
-        console.log("Đã gửi:", payload);
+        fetch(apiEndpoint, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        })
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.text();
+          })
+          .then((data) => {
+            alert(
+              `Đã gửi ledState=${state} lên ThingsBoard!\nPhản hồi: ${data}`
+            );
+          })
+          .catch((err) => {
+            alert("Lỗi khi gửi yêu cầu: " + err);
+          });
       }
     </script>
   </body>
